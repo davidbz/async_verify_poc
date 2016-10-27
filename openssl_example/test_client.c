@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
     method = TLSv1_method();
     ctx = SSL_CTX_new(method);
-    SSL_CTX_set_verify(ctx, SSL_VERIFY_FAIL_IF_NO_PEER_CERT|SSL_VERIFY_ASYNC, verify_callback);
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_ASYNC, NULL);
 
     printf("Connecting to %s:%s...\n", hostname, port);
     sock = make_connection(hostname, port);
@@ -118,7 +118,8 @@ int main(int argc, char *argv[])
                     break;
                 case SSL_ERROR_WANT_X509_VERIFY:
                     printf("-> SSL_WANT_X509_VERIFY\n");
-                    ssl->verify_result = X509_V_ERR_UNABLE_TO_GET_CRL;
+                    //SSL_set_verify_result(ssl, X509_V_ERR_UNABLE_TO_GET_CRL);
+                    SSL_set_verify_result(ssl, X509_V_OK);
                     break;
                 default:
                     printf("-> %d\n", err);
